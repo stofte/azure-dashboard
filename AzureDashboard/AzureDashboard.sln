@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureDashboard.Wpf", "AzureDashboard\AzureDashboard.Wpf.csproj", "{9C121F4B-595C-4C4B-8572-FE7043211523}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureDashboard.Services", "AzureDashboard.Core\AzureDashboard.Services.csproj", "{33C5962F-04FF-4112-8B93-0EF250CC3E42}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9C121F4B-595C-4C4B-8572-FE7043211523}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C121F4B-595C-4C4B-8572-FE7043211523}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C121F4B-595C-4C4B-8572-FE7043211523}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C121F4B-595C-4C4B-8572-FE7043211523}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33C5962F-04FF-4112-8B93-0EF250CC3E42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33C5962F-04FF-4112-8B93-0EF250CC3E42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33C5962F-04FF-4112-8B93-0EF250CC3E42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33C5962F-04FF-4112-8B93-0EF250CC3E42}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {607A3D93-8769-4130-A06F-73EF67D3A5F8}
+	EndGlobalSection
+EndGlobal

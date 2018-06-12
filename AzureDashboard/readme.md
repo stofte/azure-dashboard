@@ -1,0 +1,1 @@
+https://github.com/ButchersBoy/MaterialDesignInXamlToolkit/issues/830w
