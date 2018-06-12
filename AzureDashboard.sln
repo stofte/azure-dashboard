@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureDashboard.Wpf", "AzureDashboard\AzureDashboard.Wpf.csproj", "{9C121F4B-595C-4C4B-8572-FE7043211523}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureDashboard.Wpf", "AzureDashboard.Wpf\AzureDashboard.Wpf.csproj", "{9C121F4B-595C-4C4B-8572-FE7043211523}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureDashboard.Services", "AzureDashboard.Core\AzureDashboard.Services.csproj", "{33C5962F-04FF-4112-8B93-0EF250CC3E42}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureDashboard.Services", "AzureDashboard.Services\AzureDashboard.Services.csproj", "{33C5962F-04FF-4112-8B93-0EF250CC3E42}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
