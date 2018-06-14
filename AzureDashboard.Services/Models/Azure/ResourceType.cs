@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AzureDashboard.Services.Models
+namespace AzureDashboard.Services.Models.Azure
 {
-    public class TenantIdentifier
+    public class ResourceType
     {
         public string Id { get; set; }
-        public string TenantId { get; set; }
+        public string Name { get; set; }
+
+        public bool IsMetricsSupported { get; set; }
     }
 }

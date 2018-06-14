@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using AzureDashboard.Services.Models;
+using AzureDashboard.Services.Models.Azure;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Newtonsoft.Json;
 
@@ -26,6 +27,13 @@ namespace AzureDashboard.Services
         IEnumerable<Resource> _resources;
         Subscription _selectedSubscription;
 
+        public ArmClient(AzureContext sp) : this()
+        {
+
+        }
+
+        public ArmClient() { }
+
         public ArmClient(string clientId, string clientSecret, string tenantId)
         {
             _clientId = clientId;
@@ -39,11 +47,16 @@ namespace AzureDashboard.Services
             var authString = "https://login.microsoftonline.com/" + _tenantId;
             //var authenticationContext = new AuthenticationContext(authString, false);
             //var clientCred = new ClientCredential(_clientId);
-            //var uc = new UserPasswordCredential("svend.tofte@kraftvaerk.com", "jGdeaepKa9pqJpV");
             
             bool success = false;
             try
             {
+                var cache = new FileCache();
+                var cached = cache.ReadItems().ToList();
+                if (cached.Count() > 0)
+                {
+
+                }
                 //var authenticationResult = await authenticationContext.AcquireTokenAsync(_armBaseUrl, clientCred).ConfigureAwait(false);
                 _client = new HttpClient
                 {
@@ -55,10 +68,12 @@ namespace AzureDashboard.Services
                     // https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-devhowto-multi-tenant-overview
                     // https://dev.office.com/blogs/microsoft-graph-or-azure-ad-graph
 
-                    var commonCtx = new AuthenticationContext("https://login.microsoftonline.com/common");
+                    var commonCtx = new AuthenticationContext("https://login.microsoftonline.com/common", cache);
+                    
                     var commonAuth = await commonCtx.AcquireTokenAsync(_armBaseUrl, _powershellApplicationId, _powershellReturnUrl, new PlatformParameters(PromptBehavior.Auto));
                     
-                    commonCtx = new AuthenticationContext(commonAuth.Authority);
+                    commonCtx = new AuthenticationContext(commonAuth.Authority, cache);
+                    
                     var x = await commonCtx.AcquireTokenAsync(_armBaseUrl, _powershellApplicationId, _powershellReturnUrl, new PlatformParameters(PromptBehavior.Never));
 
                     _client.DefaultRequestHeaders.Clear();
@@ -72,7 +87,7 @@ namespace AzureDashboard.Services
                     foreach(var d in data)
                     {
                         var orgQuery = $"https://graph.microsoft.com/v1.0/{d.TenantId}/organization/";
-                        var ac = new AuthenticationContext($"https://login.microsoftonline.com/{d.TenantId}");
+                        var ac = new AuthenticationContext($"https://login.microsoftonline.com/{d.TenantId}", cache);
                         var ar = await ac.AcquireTokenAsync("https://graph.microsoft.com", _powershellApplicationId, _powershellReturnUrl, new PlatformParameters(PromptBehavior.Never));
                         var oclient = new HttpClient();
                         oclient.DefaultRequestHeaders.Clear();
@@ -86,7 +101,8 @@ namespace AzureDashboard.Services
             }
             catch (AdalServiceException exn) 
                 when (exn.Message.Contains("AADSTS70002") || // Error validating credentials.
-                      exn.Message.Contains("AADSTS50012")) // Invalid client secret is provided.
+                      exn.Message.Contains("AADSTS50012") || // Invalid client secret is provided.
+                      exn.Message.Contains("User canceled authentication")) // cancelled
             { }
             
             return success;

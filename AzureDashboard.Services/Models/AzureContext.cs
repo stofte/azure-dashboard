@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace AzureDashboard.Services.Models
 {
-    public class Subscription
+    public class AzureContext
     {
-        public string SubscriptionId { get; set; }
-        public string DisplayName { get; set; }
     }
 }

@@ -41,6 +41,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,15 +51,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArmClient.cs" />
-    <Compile Include="Models\MetricResult.cs" />
-    <Compile Include="Models\Metric.cs" />
-    <Compile Include="Models\DimensionValue.cs" />
-    <Compile Include="Models\MetricData.cs" />
-    <Compile Include="Models\Name.cs" />
-    <Compile Include="Models\Resource.cs" />
-    <Compile Include="Models\ResourceType.cs" />
-    <Compile Include="Models\Subscription.cs" />
-    <Compile Include="Models\TenantIdentifier.cs" />
+    <Compile Include="AzureContextService.cs" />
+    <Compile Include="AzureUrlService.cs" />
+    <Compile Include="FileCache.cs" />
+    <Compile Include="Models\Azure\MetricResult.cs" />
+    <Compile Include="Models\Azure\Metric.cs" />
+    <Compile Include="Models\Azure\DimensionValue.cs" />
+    <Compile Include="Models\Azure\MetricData.cs" />
+    <Compile Include="Models\Azure\Name.cs" />
+    <Compile Include="Models\Azure\Resource.cs" />
+    <Compile Include="Models\Azure\ResourceType.cs" />
+    <Compile Include="Models\AzureContext.cs" />
+    <Compile Include="Models\Azure\Subscription.cs" />
+    <Compile Include="Models\Azure\TenantIdentifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
