@@ -14,6 +14,8 @@ namespace AzureDashboard.Services
     {
         string _armBaseUrl = "https://management.azure.com/";
         string _isoFormatStr = "yyyy-MM-ddTHH:mm:ssZ";
+        Uri _powershellReturnUrl = new Uri("urn:ietf:wg:oauth:2.0:oob");
+        string _powershellApplicationId = "1950a258-227b-4e31-a9cf-717495945fc2";
         string _clientId = null;
         string _clientSecret = null;
         string _tenantId = null;
@@ -33,21 +35,54 @@ namespace AzureDashboard.Services
 
         public async Task<bool> Initialize()
         {
+            // todo re-add service principal path
             var authString = "https://login.microsoftonline.com/" + _tenantId;
-            var authenticationContext = new AuthenticationContext(authString, false);
-            var clientCred = new ClientCredential(_clientId, _clientSecret);
-
+            //var authenticationContext = new AuthenticationContext(authString, false);
+            //var clientCred = new ClientCredential(_clientId);
+            //var uc = new UserPasswordCredential("svend.tofte@kraftvaerk.com", "jGdeaepKa9pqJpV");
+            
             bool success = false;
             try
             {
-                var authenticationResult = await authenticationContext.AcquireTokenAsync(_armBaseUrl, clientCred).ConfigureAwait(false);
+                //var authenticationResult = await authenticationContext.AcquireTokenAsync(_armBaseUrl, clientCred).ConfigureAwait(false);
                 _client = new HttpClient
                 {
                     BaseAddress = new Uri(_armBaseUrl)
                 };
-                _client.DefaultRequestHeaders.Clear();
-                _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {authenticationResult.AccessToken}");
-                success = true;
+                
+                {
+                    // http://www.cloudidentity.com/blog/2014/08/26/the-common-endpoint-walks-like-a-tenant-talks-like-a-tenant-but-is-not-a-tenant/
+                    // https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-devhowto-multi-tenant-overview
+                    // https://dev.office.com/blogs/microsoft-graph-or-azure-ad-graph
+
+                    var commonCtx = new AuthenticationContext("https://login.microsoftonline.com/common");
+                    var commonAuth = await commonCtx.AcquireTokenAsync(_armBaseUrl, _powershellApplicationId, _powershellReturnUrl, new PlatformParameters(PromptBehavior.Auto));
+                    
+                    commonCtx = new AuthenticationContext(commonAuth.Authority);
+                    var x = await commonCtx.AcquireTokenAsync(_armBaseUrl, _powershellApplicationId, _powershellReturnUrl, new PlatformParameters(PromptBehavior.Never));
+
+                    _client.DefaultRequestHeaders.Clear();
+                    _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {x.AccessToken}");
+
+                    var response = await _client.GetAsync("/tenants?api-version=2016-06-01").ConfigureAwait(false);
+                    var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var json = body.Substring(9);
+                    json = json.Substring(0, json.Length - 1);
+                    var data = JsonConvert.DeserializeObject<IEnumerable<TenantIdentifier>>(json);
+                    foreach(var d in data)
+                    {
+                        var orgQuery = $"https://graph.microsoft.com/v1.0/{d.TenantId}/organization/";
+                        var ac = new AuthenticationContext($"https://login.microsoftonline.com/{d.TenantId}");
+                        var ar = await ac.AcquireTokenAsync("https://graph.microsoft.com", _powershellApplicationId, _powershellReturnUrl, new PlatformParameters(PromptBehavior.Never));
+                        var oclient = new HttpClient();
+                        oclient.DefaultRequestHeaders.Clear();
+                        oclient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ar.AccessToken}");
+                        var oresponse = await oclient.GetAsync(orgQuery).ConfigureAwait(false);
+                        var obody = await oresponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    }
+
+                    success = true;
+                }
             }
             catch (AdalServiceException exn) 
                 when (exn.Message.Contains("AADSTS70002") || // Error validating credentials.

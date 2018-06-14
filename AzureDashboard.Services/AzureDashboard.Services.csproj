@@ -58,6 +58,7 @@
     <Compile Include="Models\Resource.cs" />
     <Compile Include="Models\ResourceType.cs" />
     <Compile Include="Models\Subscription.cs" />
+    <Compile Include="Models\TenantIdentifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
