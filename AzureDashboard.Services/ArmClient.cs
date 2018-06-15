@@ -55,7 +55,11 @@ namespace AzureDashboard.Services
                 var cached = cache.ReadItems().ToList();
                 if (cached.Count() > 0)
                 {
-
+                    foreach(var c in cached)
+                    {
+                        var ac = new AuthenticationContext("https://login.microsoftonline.com/" + c.TenantId, cache);
+                        var ar = await ac.AcquireTokenAsync(_armBaseUrl, _powershellApplicationId, _powershellReturnUrl, new PlatformParameters(PromptBehavior.Auto));
+                    }
                 }
                 //var authenticationResult = await authenticationContext.AcquireTokenAsync(_armBaseUrl, clientCred).ConfigureAwait(false);
                 _client = new HttpClient
@@ -71,7 +75,8 @@ namespace AzureDashboard.Services
                     var commonCtx = new AuthenticationContext("https://login.microsoftonline.com/common", cache);
                     
                     var commonAuth = await commonCtx.AcquireTokenAsync(_armBaseUrl, _powershellApplicationId, _powershellReturnUrl, new PlatformParameters(PromptBehavior.Auto));
-                    
+                    var ui = commonAuth.UserInfo;
+
                     commonCtx = new AuthenticationContext(commonAuth.Authority, cache);
                     
                     var x = await commonCtx.AcquireTokenAsync(_armBaseUrl, _powershellApplicationId, _powershellReturnUrl, new PlatformParameters(PromptBehavior.Never));

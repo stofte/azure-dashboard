@@ -18,7 +18,7 @@ namespace AzureDashboard.Wpf.ViewModels
     public class ShellViewModel : Conductor<object>
     {
         ArmClient _client;
-
+        AzureContextService azureContextService;
         public ObservableCollection<Subscription> Subscriptions { get; set; }
         public Prop<Subscription> SelectedSubscription { get; set; }
         public Prop<bool> SubscriptionsSelectorEnabled { get; set; }
@@ -59,8 +59,9 @@ namespace AzureDashboard.Wpf.ViewModels
         public Prop<DateTime> MaxLabel { get; set; }
         public Prop<DateTime> MinLabel { get; set; }
 
-        public ShellViewModel(ArmClient client)
+        public ShellViewModel(AzureContextService azureContextService)
         {
+            this.azureContextService = azureContextService;
             Subscriptions = new ObservableCollection<Subscription>();
             SelectedSubscription = new Prop<Subscription>();
             SubscriptionsSelectorEnabled = new Prop<bool>();
@@ -90,7 +91,7 @@ namespace AzureDashboard.Wpf.ViewModels
             Labels = new ObservableCollection<string>();
             MaxLabel = new Prop<DateTime>();
             MinLabel = new Prop<DateTime>();
-            _client = client;
+            //_client = client;
         }
 
         public async void SelectSubscription(SelectionChangedEventArgs args)
@@ -300,14 +301,16 @@ namespace AzureDashboard.Wpf.ViewModels
         
         protected override async void OnInitialize()
         {
-            await _client.Initialize();
-            var subs = await _client.Subscriptions();
-            foreach (var sub in subs)
-            {
-                Subscriptions.Add(sub);
-            }
-            SelectedSubscription.Value = subs.First();
-            SubscriptionsSelectorEnabled.Value = subs.Count() > 1;
+            await azureContextService.Start();
+
+            //await _client.Initialize();
+            //var subs = await _client.Subscriptions();
+            //foreach (var sub in subs)
+            //{
+            //    Subscriptions.Add(sub);
+            //}
+            //SelectedSubscription.Value = subs.First();
+            //SubscriptionsSelectorEnabled.Value = subs.Count() > 1;
             base.OnInitialize();
         }
     }

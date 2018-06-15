@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="AzureDashboard.Wpf.Views.AccountManagerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AzureDashboard.Wpf.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="400">
+    <StackPanel Margin="16" Width="200">
+        <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
+                                    HorizontalAlignment="Right" Margin="16"
+                                    IsChecked="{Binding Path=Visible.Value, Mode=TwoWay}" />
+        <Button Style="{StaticResource MaterialDesignRaisedButton}">
+            Add Account
+        </Button>
+    </StackPanel>
+</UserControl>

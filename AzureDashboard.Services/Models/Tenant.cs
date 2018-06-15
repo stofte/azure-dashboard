@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace AzureDashboard.Services.Models
 {
-    public class AzureContext
+    public class Tenant
     {
-        
+        public string Id { get; set; }
+        public string Name { get; set; }
     }
 }
