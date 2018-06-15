@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace AzureDashboard.Wpf.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindowView.xaml
+    /// Interaction logic for ShellView.xaml
     /// </summary>
-    public partial class MainWindowView
+    public partial class OldShellView
     {
-        public MainWindowView()
+        public OldShellView()
         {
             InitializeComponent();
         }

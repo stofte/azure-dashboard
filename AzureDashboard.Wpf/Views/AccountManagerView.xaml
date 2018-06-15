@@ -10,7 +10,7 @@
         <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
                                     HorizontalAlignment="Right" Margin="16"
                                     IsChecked="{Binding Path=Visible.Value, Mode=TwoWay}" />
-        <Button Style="{StaticResource MaterialDesignRaisedButton}">
+        <Button Style="{StaticResource MaterialDesignRaisedButton}" x:Name="AddAcccount">
             Add Account
         </Button>
     </StackPanel>

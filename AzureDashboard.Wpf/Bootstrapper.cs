@@ -29,7 +29,7 @@ namespace AzureDashboard.Wpf
             _container.Singleton<IEventAggregator, EventAggregator>();
             _container.Instance<ArmClient>(new ArmClient(clientId, clientSecret, tenantId));
             _container.Instance(new AzureContextService());
-            _container.PerRequest<MainWindowViewModel>();
+            _container.PerRequest<ShellViewModel>();
             _container.PerRequest<AccountManagerViewModel>();
         }
 
@@ -50,7 +50,7 @@ namespace AzureDashboard.Wpf
 
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
-            DisplayRootViewFor<MainWindowViewModel>();
+            DisplayRootViewFor<ShellViewModel>();
         }
     }
 }

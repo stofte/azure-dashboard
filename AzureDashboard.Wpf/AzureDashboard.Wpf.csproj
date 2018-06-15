@@ -110,27 +110,27 @@
     </ApplicationDefinition>
     <Compile Include="Models\Prop.cs" />
     <Compile Include="ViewModels\AccountManagerViewModel.cs" />
-    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\OldShellViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="Views\AccountManagerView.xaml.cs">
       <DependentUpon>AccountManagerView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\MainWindowView.xaml.cs">
-      <DependentUpon>MainWindowView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ShellView.xaml.cs">
-      <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Views\OldShellView.xaml.cs">
+      <DependentUpon>OldShellView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ShellView.xaml.cs">
+      <DependentUpon>ShellView.xaml</DependentUpon>
+    </Compile>
     <Page Include="Views\AccountManagerView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MainWindowView.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="Views\OldShellView.xaml">
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="Views\ShellView.xaml">
       <Generator>MSBuild:Compile</Generator>
