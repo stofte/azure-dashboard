@@ -17,7 +17,7 @@ namespace AzureDashboard.Wpf.ViewModels
 {
     public class OldShellViewModel : Conductor<object>
     {
-        ArmClient _client;
+        ApiClient _client;
         AzureContextService azureContextService;
         public ObservableCollection<Subscription> Subscriptions { get; set; }
         public Prop<Subscription> SelectedSubscription { get; set; }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using AzureDashboard.Services.Helpers;
 using AzureDashboard.Services.Models;
 using AzureDashboard.Services.Models.Azure;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
@@ -11,8 +12,13 @@ using Newtonsoft.Json;
 
 namespace AzureDashboard.Services
 {
-    public class ArmClient
+    public class ApiClient
     {
+        public readonly string ArmBaseUrl = "https://management.azure.com/";
+        public readonly string AuthBaseUrl = "https://login.microsoftonline.com/";
+
+        public string TenantId { get; private set; }
+
         string _armBaseUrl = "https://management.azure.com/";
         string _isoFormatStr = "yyyy-MM-ddTHH:mm:ssZ";
         Uri _powershellReturnUrl = new Uri("urn:ietf:wg:oauth:2.0:oob");
@@ -21,26 +27,47 @@ namespace AzureDashboard.Services
         string _clientSecret = null;
         string _tenantId = null;
         IEnumerable<string> _supportedProviders = new string[] { };
-        HttpClient _client;
+        HttpClient client;
 
         IEnumerable<Subscription> _subscriptions;
         IEnumerable<Resource> _resources;
         Subscription _selectedSubscription;
 
-        public ArmClient(AzureContext sp) : this()
-        {
 
+        public ApiClient(HttpClient client)
+        {
+            this.client = client;
         }
 
-        public ArmClient() { }
-
-        public ArmClient(string clientId, string clientSecret, string tenantId)
+        public async Task<IEnumerable<TenantIdentifier>> AvailableTenants(AzureAccessToken token)
         {
-            _clientId = clientId;
-            _clientSecret = clientSecret;
-            _tenantId = tenantId;
+            var msg = new HttpRequestMessage()
+                .Get($"{ArmBaseUrl}/tenants?api-version=2016-06-01")
+                .WithHeader("Authorization", $"Bearer {token.Value}");
+            var response = await client.SendAsync(msg).ConfigureAwait(false);
+            var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var json = body.Substring(9);
+            json = json.Substring(0, json.Length - 1);
+            var data = JsonConvert.DeserializeObject<IEnumerable<TenantIdentifier>>(json);
+            return data;
         }
 
+        public async Task<Tenant> Tenant(AzureAccessToken token)
+        {
+            var msg = new HttpRequestMessage()
+                .Get($"https://graph.microsoft.com/v1.0/{token.TenantId}/organization/")
+                .WithHeader("Authorization", $"Bearer {token.Value}");
+            var response = await client.SendAsync(msg).ConfigureAwait(false);
+            var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var marker = "\"value\":";
+            var json = body.Substring(body.IndexOf(marker) + marker.Length);
+            json = json.Substring(0, json.Length - 1);
+            var tenants = JsonConvert.DeserializeObject<IEnumerable<Tenant>>(json);
+            return tenants.Single(t => t.Id == token.TenantId);
+        }
+
+        
+        
         public async Task<bool> Initialize()
         {
             // todo re-add service principal path
@@ -62,13 +89,13 @@ namespace AzureDashboard.Services
                     }
                 }
                 //var authenticationResult = await authenticationContext.AcquireTokenAsync(_armBaseUrl, clientCred).ConfigureAwait(false);
-                _client = new HttpClient
+                client = new HttpClient
                 {
                     BaseAddress = new Uri(_armBaseUrl)
                 };
                 
                 {
-                    // http://www.cloudidentity.com/blog/2014/08/26/the-common-endpoint-walks-like-a-tenant-talks-like-a-tenant-but-is-not-a-tenant/
+                    
                     // https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-devhowto-multi-tenant-overview
                     // https://dev.office.com/blogs/microsoft-graph-or-azure-ad-graph
 
@@ -81,10 +108,10 @@ namespace AzureDashboard.Services
                     
                     var x = await commonCtx.AcquireTokenAsync(_armBaseUrl, _powershellApplicationId, _powershellReturnUrl, new PlatformParameters(PromptBehavior.Never));
 
-                    _client.DefaultRequestHeaders.Clear();
-                    _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {x.AccessToken}");
+                    client.DefaultRequestHeaders.Clear();
+                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {x.AccessToken}");
 
-                    var response = await _client.GetAsync("/tenants?api-version=2016-06-01").ConfigureAwait(false);
+                    var response = await client.GetAsync("/tenants?api-version=2016-06-01").ConfigureAwait(false);
                     var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     var json = body.Substring(9);
                     json = json.Substring(0, json.Length - 1);
@@ -120,7 +147,7 @@ namespace AzureDashboard.Services
 
         public async Task<IEnumerable<Subscription>> Subscriptions()
         {
-            var response = await _client.GetAsync("subscriptions?api-version=2014-04-01").ConfigureAwait(false);
+            var response = await client.GetAsync("subscriptions?api-version=2014-04-01").ConfigureAwait(false);
             var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             _subscriptions = Parse<IEnumerable<Subscription>>(body, simpleValue: true).OrderBy(x => x.DisplayName);
             return _subscriptions;
@@ -139,7 +166,7 @@ namespace AzureDashboard.Services
             if (_resources == null)
             {
                 var url = $"/subscriptions/{_selectedSubscription.SubscriptionId}/resources?api-version=2017-05-10";
-                var response = await _client.GetAsync(url).ConfigureAwait(false);
+                var response = await client.GetAsync(url).ConfigureAwait(false);
                 var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 _resources = Parse<IEnumerable<Resource>>(body, simpleValue: true).OrderBy(x => x.Name);
             }
@@ -149,7 +176,7 @@ namespace AzureDashboard.Services
         public async Task<IEnumerable<Metric>> Metrics(Resource resource)
         {
             var url = $"{resource.Id}/providers/microsoft.insights/metricDefinitions?api-version=2018-01-01";
-            var response = await _client.GetAsync(url).ConfigureAwait(false);
+            var response = await client.GetAsync(url).ConfigureAwait(false);
             if (response.IsSuccessStatusCode)
             {
                 var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -169,7 +196,7 @@ namespace AzureDashboard.Services
             var url = $"{resource.Id}/providers/microsoft.insights/metrics?" +
                 $"metricnames={metric.Name.Value}&timespan={start.ToString(_isoFormatStr)}/{end.ToString(_isoFormatStr)}" +
                 $"&resultType=metadata&$filter={filter}&api-version=2018-01-01";
-            var response = await _client.GetAsync(url).ConfigureAwait(false);
+            var response = await client.GetAsync(url).ConfigureAwait(false);
             var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var dimVals = Parse<IEnumerable<MetricResult>>(body, metricResult: true).SelectMany(m => m.MetadataValues).ToList();
             await Task.Delay(3000);
@@ -186,7 +213,7 @@ namespace AzureDashboard.Services
             var url = $"{resource.Id}/providers/microsoft.insights/metrics?" +
                 $"metricnames={metric.Name.Value}&timespan={start.ToString(_isoFormatStr)}/{end.ToString(_isoFormatStr)}" +
                 $"{filter}&interval={interval}&api-version=2018-01-01";
-            var response = await _client.GetAsync(url).ConfigureAwait(false);
+            var response = await client.GetAsync(url).ConfigureAwait(false);
             var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var data = Parse<IEnumerable<MetricResult>>(body, metricResult: true);
             return data;
@@ -206,7 +233,7 @@ namespace AzureDashboard.Services
                 {
                     var res = resources.First(x => x.Type == type.Id);
                     var url = $"{res.Id}/providers/microsoft.insights/metricDefinitions?api-version=2018-01-01";
-                    var response = await _client.GetAsync(url).ConfigureAwait(false);
+                    var response = await client.GetAsync(url).ConfigureAwait(false);
                     type.IsMetricsSupported = response.IsSuccessStatusCode;
                     if (supported.Count == 0 && !response.IsSuccessStatusCode)
                     {

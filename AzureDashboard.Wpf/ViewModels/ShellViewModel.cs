@@ -21,19 +21,20 @@ namespace AzureDashboard.Wpf.ViewModels
             AccountManagerView = new Prop<AccountManagerViewModel>();
         }
 
-        public void AddAccount()
-        {
-
-        }
 
         protected override async void OnInitialize()
         {
-            await azureContextService.Start();
             var model = IoC.Get<AccountManagerViewModel>();
-            model.Visible.Value = !azureContextService.HasContexts;
             AccountManagerView.Value = model;
-            ActivateItem(model);
             base.OnInitialize();
+        }
+
+        protected override async void OnViewReady(object view)
+        {
+            await azureContextService.Start();
+            AccountManagerView.Value.Visible.Value = !azureContextService.HasContexts;
+            ActivateItem(AccountManagerView.Value);
+            base.OnViewReady(view);
         }
     }
 }

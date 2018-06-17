@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,10 +27,11 @@ namespace AzureDashboard.Wpf
             var clientId = ConfigurationManager.AppSettings["ClientId"];
             var clientSecret = ConfigurationManager.AppSettings["ClientSecret"];
             var tenantId = ConfigurationManager.AppSettings["TenantId"];
+            var httpClient = new HttpClient();
+            var apiClient = new ApiClient(httpClient);
             _container.Singleton<IWindowManager, WindowManager>();
             _container.Singleton<IEventAggregator, EventAggregator>();
-            _container.Instance<ArmClient>(new ArmClient(clientId, clientSecret, tenantId));
-            _container.Instance(new AzureContextService());
+            _container.Instance(new AzureContextService(apiClient));
             _container.PerRequest<ShellViewModel>();
             _container.PerRequest<AccountManagerViewModel>();
         }

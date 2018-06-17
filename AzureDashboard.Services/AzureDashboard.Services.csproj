@@ -50,10 +50,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArmClient.cs" />
+    <Compile Include="ApiClient.cs" />
+    <Compile Include="AzureClientProvider.cs" />
     <Compile Include="AzureContextService.cs" />
     <Compile Include="AzureUrlService.cs" />
     <Compile Include="FileCache.cs" />
+    <Compile Include="Helpers\HttpHelper.cs" />
     <Compile Include="Models\Azure\MetricResult.cs" />
     <Compile Include="Models\Azure\Metric.cs" />
     <Compile Include="Models\Azure\DimensionValue.cs" />
@@ -61,7 +63,7 @@
     <Compile Include="Models\Azure\Name.cs" />
     <Compile Include="Models\Azure\Resource.cs" />
     <Compile Include="Models\Azure\ResourceType.cs" />
-    <Compile Include="Models\AzureContext.cs" />
+    <Compile Include="Models\AzureAccessToken.cs" />
     <Compile Include="Models\Azure\Subscription.cs" />
     <Compile Include="Models\Azure\TenantIdentifier.cs" />
     <Compile Include="Models\Azure\UserInfo.cs" />

@@ -9,6 +9,6 @@ namespace AzureDashboard.Services.Models
     public class Tenant
     {
         public string Id { get; set; }
-        public string Name { get; set; }
+        public string DisplayName { get; set; }
     }
 }
