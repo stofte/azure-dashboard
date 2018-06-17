@@ -35,6 +35,8 @@ namespace AzureDashboard.Wpf
             _container.PerRequest<ShellViewModel>();
             _container.PerRequest<PageMenuViewModel>();
             _container.PerRequest<AccountManagerViewModel>();
+            _container.PerRequest<DashboardViewModel>();
+
         }
 
         protected override object GetInstance(Type serviceType, string key)

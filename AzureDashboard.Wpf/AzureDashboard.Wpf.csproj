@@ -118,6 +118,7 @@
     <Compile Include="Models\MenuOptionKind.cs" />
     <Compile Include="Models\Prop.cs" />
     <Compile Include="ViewModels\AccountManagerViewModel.cs" />
+    <Compile Include="ViewModels\DashboardViewModel.cs" />
     <Compile Include="ViewModels\OldShellViewModel.cs" />
     <Compile Include="ViewModels\PageMenuViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
@@ -129,6 +130,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Views\DashboardView.xaml.cs">
+      <DependentUpon>DashboardView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\OldShellView.xaml.cs">
       <DependentUpon>OldShellView.xaml</DependentUpon>
     </Compile>
@@ -139,6 +143,9 @@
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
     <Page Include="Views\AccountManagerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DashboardView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\OldShellView.xaml">

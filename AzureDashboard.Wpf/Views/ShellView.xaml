@@ -23,7 +23,7 @@
             <UserControl 
                 Grid.Column="0"
                 cal:View.Model="{Binding Path=PageMenuView.Value}"></UserControl>
-            <UserControl Grid.Column="1" cal:View.Model="{Binding Path=AccountManagerView.Value}"></UserControl>
+            <ContentControl Grid.Column="1" x:Name="ActiveItem"></ContentControl>
         </Grid>
     </md:DrawerHost>
 </Window>

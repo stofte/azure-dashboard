@@ -10,7 +10,7 @@
 
     <ListBox
         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-        SelectedIndex="0"
+        SelectedItem="{Binding Path=SelectedMenu.Value}"
         ItemsSource="{Binding MenuOptions}">
         <ListBox.ItemsPanel>
             <ItemsPanelTemplate>
