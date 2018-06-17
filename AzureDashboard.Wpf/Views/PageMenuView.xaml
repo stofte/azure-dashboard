@@ -10,17 +10,17 @@
 
     <ListBox
         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-        SelectedIndex="0">
+        SelectedIndex="0"
+        ItemsSource="{Binding MenuOptions}">
         <ListBox.ItemsPanel>
             <ItemsPanelTemplate>
                 <StackPanel Orientation="Vertical"/>
             </ItemsPanelTemplate>
         </ListBox.ItemsPanel>
-        <ListBoxItem ToolTip="Dashboard">
-            <md:PackIcon Kind="Apps" Width="25" Height="25"/>
-        </ListBoxItem>
-        <ListBoxItem ToolTip="Accounts">
-            <md:PackIcon Kind="AccountMultiple" Width="25" Height="25"  />
-        </ListBoxItem>
+        <ListBox.ItemTemplate>
+            <DataTemplate>
+                <md:PackIcon Kind="{Binding Path=Icon}" Width="25" Height="25"/>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
     </ListBox>
 </UserControl>

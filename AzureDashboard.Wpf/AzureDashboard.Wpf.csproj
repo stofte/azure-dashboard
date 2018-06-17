@@ -114,6 +114,8 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Models\MenuOption.cs" />
+    <Compile Include="Models\MenuOptionKind.cs" />
     <Compile Include="Models\Prop.cs" />
     <Compile Include="ViewModels\AccountManagerViewModel.cs" />
     <Compile Include="ViewModels\OldShellViewModel.cs" />
