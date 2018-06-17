@@ -117,6 +117,7 @@
     <Compile Include="Models\Prop.cs" />
     <Compile Include="ViewModels\AccountManagerViewModel.cs" />
     <Compile Include="ViewModels\OldShellViewModel.cs" />
+    <Compile Include="ViewModels\PageMenuViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="Views\AccountManagerView.xaml.cs">
       <DependentUpon>AccountManagerView.xaml</DependentUpon>
@@ -129,6 +130,9 @@
     <Compile Include="Views\OldShellView.xaml.cs">
       <DependentUpon>OldShellView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\PageMenuView.xaml.cs">
+      <DependentUpon>PageMenuView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
@@ -137,6 +141,9 @@
     </Page>
     <Page Include="Views\OldShellView.xaml">
       <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
+    <Page Include="Views\PageMenuView.xaml">
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ShellView.xaml">
       <Generator>MSBuild:Compile</Generator>

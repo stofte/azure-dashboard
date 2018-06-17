@@ -33,6 +33,7 @@ namespace AzureDashboard.Wpf
             _container.Singleton<IEventAggregator, EventAggregator>();
             _container.Instance(new AzureContextService(apiClient));
             _container.PerRequest<ShellViewModel>();
+            _container.PerRequest<PageMenuViewModel>();
             _container.PerRequest<AccountManagerViewModel>();
         }
 

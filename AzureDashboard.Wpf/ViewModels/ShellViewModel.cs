@@ -14,11 +14,13 @@ namespace AzureDashboard.Wpf.ViewModels
         AzureContextService azureContextService;
 
         public Prop<AccountManagerViewModel> AccountManagerView { get; set; }
+        public Prop<PageMenuViewModel> PageMenuView { get; set; }
 
         public ShellViewModel(AzureContextService azureContextService)
         {
             this.azureContextService = azureContextService;
             AccountManagerView = new Prop<AccountManagerViewModel>();
+            PageMenuView = new Prop<PageMenuViewModel>();
         }
 
 
@@ -26,14 +28,14 @@ namespace AzureDashboard.Wpf.ViewModels
         {
             var model = IoC.Get<AccountManagerViewModel>();
             AccountManagerView.Value = model;
+            var menu = IoC.Get<PageMenuViewModel>();
+            PageMenuView.Value = menu;
             base.OnInitialize();
         }
 
         protected override async void OnViewReady(object view)
         {
             await azureContextService.Start();
-            AccountManagerView.Value.Visible.Value = !azureContextService.HasContexts;
-            ActivateItem(AccountManagerView.Value);
             base.OnViewReady(view);
         }
     }

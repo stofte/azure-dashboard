@@ -14,16 +14,16 @@
         mc:Ignorable="d"
         Title="ShellView" Height="450" Width="800"
     >
-    <md:DrawerHost IsLeftDrawerOpen="{Binding Path=AccountManagerView.Value.Visible.Value}">
-        <md:DrawerHost.LeftDrawerContent>
-            <UserControl cal:View.Model="{Binding Path=AccountManagerView.Value}"></UserControl>
-        </md:DrawerHost.LeftDrawerContent>
+    <md:DrawerHost>
         <Grid>
-            <Button Command="{x:Static md:DrawerHost.OpenDrawerCommand}"
-                CommandParameter="{x:Static Dock.Left}"
-                Grid.Row="1" Grid.Column="0"  Margin="4">
-                <md:PackIcon Kind="ArrowLeft" />
-            </Button>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <UserControl 
+                Grid.Column="0"
+                cal:View.Model="{Binding Path=PageMenuView.Value}"></UserControl>
+            <UserControl Grid.Column="1" cal:View.Model="{Binding Path=AccountManagerView.Value}"></UserControl>
         </Grid>
     </md:DrawerHost>
 </Window>
