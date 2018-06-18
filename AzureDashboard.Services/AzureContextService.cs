@@ -62,10 +62,10 @@ namespace AzureDashboard.Services
             {
                 // http://www.cloudidentity.com/blog/2014/08/26/the-common-endpoint-walks-like-a-tenant-talks-like-a-tenant-but-is-not-a-tenant/
                 // https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-devhowto-multi-tenant-overview
-                var authResponse = await AcquireToken("common", PromptBehavior.SelectAccount).ConfigureAwait(false);
-                // the auth points to the users selected tenant and the access token is valid for that only
-                var accountTenant = authResponse.Authority;
-                var userAuth = await AcquireToken(accountTenant, PromptBehavior.Auto).ConfigureAwait(false);
+                // use common auth to allow the user to login to any account. the auth response is valid for the selected account only
+                var userAuth = await AcquireToken("common", PromptBehavior.SelectAccount).ConfigureAwait(false);
+                // the auth points to the accounts home tenant and the access token is valid for that only
+                var accountTenantId = GetTenantId(userAuth.Authority);
                 var userCtx = AddContext(userAuth);
                 // the tenant knowns which other tenants the user is linked to, so query for that
                 var tenantIds = await api.AvailableTenants(userCtx);
@@ -73,11 +73,20 @@ namespace AzureDashboard.Services
                 foreach(var tenantId in tenantIds)
                 {
                     // do separate graph call to obtain the displayname itself
-                    var auth = await AcquireToken(tenantId.TenantId, PromptBehavior.Auto, useGraphAuth: true)
+                    // this shouldnt trigger any login prompt, it does however require management rights in the tenant
+                    var graphAuth = await AcquireToken(tenantId.TenantId, PromptBehavior.Never, useGraphAuth: true)
                         .ConfigureAwait(false);
-                    var ctx = AddContext(auth);
-                    var tenant = await api.Tenant(ctx);
-                    tenants.Add(tenant);
+                    // pass in a one time token, we persist the values returned from the ms graph call
+                    try
+                    {
+                        var tenant = await api.Tenant(new AzureAccessToken
+                        {
+                            TenantId = graphAuth.TenantId,
+                            Value = graphAuth.AccessToken
+                        });
+                        tenants.Add(tenant);
+                    }
+                    catch (UnauthorizedAccessException) { }
                 }
                 accounts.Add(new Account
                 {
@@ -86,6 +95,7 @@ namespace AzureDashboard.Services
                         DisplayableId = userAuth.UserInfo.DisplayableId,
                         UniqueId = userAuth.UserInfo.UniqueId
                     },
+                    HomeTenant = tenants.SingleOrDefault(x => x.Id == accountTenantId),
                     Tenants = tenants
                 });
                 return true;
@@ -131,13 +141,7 @@ namespace AzureDashboard.Services
             var tokenUrl = useGraphAuth ? graphBaseUrl : armBaseUrl;
             return await ac.AcquireTokenAsync(tokenUrl, powershellAppId, powershellReturnUrl, new PlatformParameters(promptBehavior)).ConfigureAwait(false);
         }
-
-        string GetTenantId(string authority)
-        {
-
-            return authority;
-        }
-
+        
         void QueryUserTenant()
         {
 
@@ -150,6 +154,17 @@ namespace AzureDashboard.Services
             var armSp = ServicePointManager.FindServicePoint(new Uri(armBaseUrl));
             var authSp = ServicePointManager.FindServicePoint(new Uri(authBaseUrl));
             authSp.ConnectionLeaseTimeout = armSp.ConnectionLeaseTimeout = 60 * 1000;
+        }
+
+        string GetTenantId(string tenant)
+        {
+            if (Uri.IsWellFormedUriString(tenant, UriKind.Absolute))
+            {
+                var uri = new Uri(tenant);
+                var pq = uri.PathAndQuery;
+                return pq.Substring(1, pq.Length - 2);
+            }
+            return tenant;
         }
     }
 }

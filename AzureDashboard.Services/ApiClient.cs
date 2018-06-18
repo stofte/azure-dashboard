@@ -58,7 +58,14 @@ namespace AzureDashboard.Services
                 .Get($"https://graph.microsoft.com/v1.0/{token.TenantId}/organization/")
                 .WithHeader("Authorization", $"Bearer {token.Value}");
             var response = await client.SendAsync(msg).ConfigureAwait(false);
+            // https://stackoverflow.com/questions/43301218/authenticating-with-azure-active-directory-on-powershell
+            // also seems to indicate no subscription (aka useless)
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new UnauthorizedAccessException(token.TenantId);
+            }
             var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            
             var marker = "\"value\":";
             var json = body.Substring(body.IndexOf(marker) + marker.Length);
             json = json.Substring(0, json.Length - 1);
