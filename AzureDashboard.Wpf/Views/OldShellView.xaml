@@ -1,4 +1,4 @@
-﻿<mah:MetroWindow 
+﻿<UserControl
         xml:lang="en-US"
         x:Class="AzureDashboard.Wpf.Views.OldShellView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -8,10 +8,9 @@
         xmlns:cal="http://www.caliburnproject.org"
         xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="ShellView" Height="450" Width="800" BorderThickness="1"
+        Height="450" Width="800" BorderThickness="1"
         >
     <Grid>
         <Grid.RowDefinitions>
@@ -145,4 +144,4 @@
             </lvc:CartesianChart>
         </md:Card>
     </Grid>
-</mah:MetroWindow>
+</UserControl>

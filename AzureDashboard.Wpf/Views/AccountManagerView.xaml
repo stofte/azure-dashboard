@@ -22,60 +22,49 @@
 
         <TextBlock
             Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-            FontSize="30" FontStyle="Italic"
+            FontSize="20"
             Margin="20 20 20 0">
             Accounts
         </TextBlock>
 
-        <StackPanel 
-            Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2"
-            Margin="20 10 20 20"
-            >
-            <ItemsControl ItemsSource="{Binding Path=Accounts}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border
-                            Margin="0 0 0 20"
-                            CornerRadius="2"
-                            BorderThickness="0 0 0 1"
-                            BorderBrush="{StaticResource MaterialDesignDivider}">
-                            <StackPanel
-                                Margin="0 0 0 20">
-                                <TextBlock 
-                                Text="{Binding Path=Info.DisplayableId}"
-                                FontSize="20"></TextBlock>
-                                <ItemsControl
-                                Margin="5"
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Left"
-                                ItemsSource="{Binding Tenants}" >
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Margin="5">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition SharedSizeGroup="Checkerz" Width="35" />
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <ToggleButton
-                                                VerticalAlignment="Center"
-                                                IsChecked="True"
-                                                Style="{StaticResource MaterialDesignActionLightToggleButton}"
-                                                Content="{Binding Code}" />
-                                                <StackPanel Margin="8 0 0 0" Grid.Column="1">
+        <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2"
+            VerticalScrollBarVisibility="Auto"
+            Margin="20 10 0 0">
+            <StackPanel>
+                <ItemsControl ItemsSource="{Binding Path=Accounts}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Margin="0 0 20 20"
+                                CornerRadius="2"
+                                BorderThickness="0 0 0 0.3"
+                                BorderBrush="{StaticResource MaterialDesignDivider}">
+                                <StackPanel
+                                    Margin="0 0 0 20">
+                                    <TextBlock 
+                                        Text="{Binding Path=Info.DisplayableId}"
+                                        FontSize="15">
+                                    </TextBlock>
+                                    <ItemsControl
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                                        ItemsSource="{Binding Tenants}" >
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Margin="10">
                                                     <TextBlock FontWeight="Bold" Text="{Binding DisplayName}" />
                                                     <TextBlock Text="{Binding Id}" />
                                                 </StackPanel>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
-
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
         <Button
             x:Name="AddAccount"
             Grid.Row="2" Grid.Column="1"

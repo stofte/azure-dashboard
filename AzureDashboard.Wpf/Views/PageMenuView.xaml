@@ -14,12 +14,13 @@
         ItemsSource="{Binding MenuOptions}">
         <ListBox.ItemsPanel>
             <ItemsPanelTemplate>
-                <StackPanel Orientation="Vertical"/>
+                <StackPanel Orientation="Vertical" />
             </ItemsPanelTemplate>
         </ListBox.ItemsPanel>
         <ListBox.ItemTemplate>
             <DataTemplate>
-                <md:PackIcon Kind="{Binding Path=Icon}" Width="25" Height="25"/>
+                <md:PackIcon Kind="{Binding Path=Icon}" Width="25" Height="25" ToolTip="{Binding Path=Name}">
+                </md:PackIcon>
             </DataTemplate>
         </ListBox.ItemTemplate>
     </ListBox>
