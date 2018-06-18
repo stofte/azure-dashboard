@@ -62,4 +62,11 @@ namespace AzureDashboard.Wpf
             DisplayRootViewFor<ShellViewModel>();
         }
     }
+
+    // 
+    public class RequireDlls
+    {
+        public MaterialDesignColors.Hue T1 = default(MaterialDesignColors.Hue);
+        public MaterialDesignThemes.Wpf.Card T2 = default(MaterialDesignThemes.Wpf.Card);
+    }
 }

@@ -6,7 +6,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:cal="http://www.caliburnproject.org"
-        xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
@@ -112,8 +111,8 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <xctk:DateTimePicker Grid.Column="0" Padding="10" ShowButtonSpinner="False" Value="{Binding Path=Start.Value}"></xctk:DateTimePicker>
-            <xctk:DateTimePicker Grid.Column="1" Padding="10" ShowButtonSpinner="False" Value="{Binding Path=End.Value}"></xctk:DateTimePicker>
+            <!--<xctk:DateTimePicker Grid.Column="0" Padding="10" ShowButtonSpinner="False" Value="{Binding Path=Start.Value}"></xctk:DateTimePicker>
+            <xctk:DateTimePicker Grid.Column="1" Padding="10" ShowButtonSpinner="False" Value="{Binding Path=End.Value}"></xctk:DateTimePicker>-->
         </Grid>
 
         <ComboBox Height="50" Grid.Row="2" Grid.Column="1" Margin="10" Padding="10"
