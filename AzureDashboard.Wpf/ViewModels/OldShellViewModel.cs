@@ -1,6 +1,6 @@
 ﻿using AzureDashboard.Services;
-using AzureDashboard.Services.Models;
-using AzureDashboard.Services.Models.Azure;
+using AzureDashboard.Core.Models;
+using AzureDashboard.Core.AzureRM.Models;
 using AzureDashboard.Wpf.Models;
 using Caliburn.Micro;
 using LiveCharts;

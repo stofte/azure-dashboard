@@ -179,6 +179,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AzureDashboard.Core\AzureDashboard.Core.csproj">
+      <Project>{f0167ca2-e025-4c61-9ceb-cfc5c55bfec5}</Project>
+      <Name>AzureDashboard.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AzureDashboard.Services\AzureDashboard.Services.csproj">
       <Project>{33c5962f-04ff-4112-8b93-0ef250cc3e42}</Project>
       <Name>AzureDashboard.Services</Name>

@@ -1,11 +1,11 @@
-﻿using AzureDashboard.Services.Models.Azure;
+﻿using AzureDashboard.Core.AzureRM.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AzureDashboard.Services.Models
+namespace AzureDashboard.Core.Models
 {
     public class Account
     {

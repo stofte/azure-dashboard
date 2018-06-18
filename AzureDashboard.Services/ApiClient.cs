@@ -5,8 +5,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using AzureDashboard.Services.Helpers;
-using AzureDashboard.Services.Models;
-using AzureDashboard.Services.Models.Azure;
+using AzureDashboard.Core.Models;
+using AzureDashboard.Core.AzureRM.Models;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Newtonsoft.Json;
 

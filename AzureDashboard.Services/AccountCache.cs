@@ -1,4 +1,4 @@
-﻿using AzureDashboard.Services.Models;
+﻿using AzureDashboard.Core.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

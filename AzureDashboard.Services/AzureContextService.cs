@@ -1,5 +1,6 @@
 ﻿using AzureDashboard.Services.Helpers;
-using AzureDashboard.Services.Models;
+using AzureDashboard.Core.Models;
+using AzureDashboard.Core.AzureRM.Models;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using System;
 using System.Collections.Generic;
@@ -90,7 +91,7 @@ namespace AzureDashboard.Services
                 }
                 accounts.Add(new Account
                 {
-                    Info = new Models.Azure.UserInfo
+                    Info = new Core.AzureRM.Models.UserInfo
                     {
                         DisplayableId = userAuth.UserInfo.DisplayableId,
                         UniqueId = userAuth.UserInfo.UniqueId

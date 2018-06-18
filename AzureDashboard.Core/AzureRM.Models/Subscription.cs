@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AzureDashboard.Services.Models.Azure
+namespace AzureDashboard.Core.AzureRM.Models
 {
     public class Subscription
     {

@@ -1,4 +1,5 @@
 ﻿using AzureDashboard.Services;
+using AzureDashboard.Services.Repositories;
 using AzureDashboard.Wpf.ViewModels;
 using Caliburn.Micro;
 using System;
@@ -15,7 +16,7 @@ namespace AzureDashboard.Wpf
 {
     public class Bootstrapper : BootstrapperBase
     {
-        private SimpleContainer _container = new SimpleContainer();
+        private SimpleContainer container = new SimpleContainer();
 
         public Bootstrapper()
         {
@@ -27,31 +28,33 @@ namespace AzureDashboard.Wpf
             var clientId = ConfigurationManager.AppSettings["ClientId"];
             var clientSecret = ConfigurationManager.AppSettings["ClientSecret"];
             var tenantId = ConfigurationManager.AppSettings["TenantId"];
+
             var httpClient = new HttpClient();
             var apiClient = new ApiClient(httpClient);
-            _container.Singleton<IWindowManager, WindowManager>();
-            _container.Singleton<IEventAggregator, EventAggregator>();
-            _container.Instance(new AzureContextService(apiClient));
-            _container.PerRequest<ShellViewModel>();
-            _container.PerRequest<PageMenuViewModel>();
-            _container.PerRequest<AccountManagerViewModel>();
-            _container.PerRequest<DashboardViewModel>();
-
+            container.Singleton<IWindowManager, WindowManager>();
+            container.Singleton<IEventAggregator, EventAggregator>();
+            container.Instance(new AzureContextService(apiClient));
+            container.Instance(new AccountRepository());
+            container.Instance(new TenantRepository());
+            container.PerRequest<ShellViewModel>();
+            container.PerRequest<PageMenuViewModel>();
+            container.PerRequest<AccountManagerViewModel>();
+            container.PerRequest<DashboardViewModel>();
         }
 
         protected override object GetInstance(Type serviceType, string key)
         {
-            return _container.GetInstance(serviceType, key);
+            return container.GetInstance(serviceType, key);
         }
 
         protected override IEnumerable<object> GetAllInstances(Type serviceType)
         {
-            return _container.GetAllInstances(serviceType);
+            return container.GetAllInstances(serviceType);
         }
 
         protected override void BuildUp(object instance)
         {
-            _container.BuildUp(instance);
+            container.BuildUp(instance);
         }
 
         protected override void OnStartup(object sender, StartupEventArgs e)
