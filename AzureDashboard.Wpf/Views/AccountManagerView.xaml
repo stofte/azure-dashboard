@@ -4,10 +4,42 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AzureDashboard.Wpf.Views"
+             xmlns:localModels="clr-namespace:AzureDashboard.Wpf.Models"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="600">
-
+    <UserControl.Resources>
+        <DataTemplate x:Key="TenantSubscriptionDataTemplate">
+            <StackPanel Margin="0 10 0 10">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontWeight="Bold" Text="{Binding DisplayName}" />
+                    <TextBlock Text="{Binding Id}" Foreground="#bbb" Margin="10 0 0 0" />
+                </StackPanel>
+                <ItemsControl ItemsSource="{Binding Path=DataContext.Subscriptions, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="10 10 0 0">
+                                <TextBlock Text="{Binding Path=DisplayName}"></TextBlock>
+                                <TextBlock Text="{Binding Path=SubscriptionId}" Foreground="#bbb" Margin="10 0 0 0"></TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="TenantEmptySubscriptionDataTemplate">
+            <StackPanel Margin="0 10 0 10">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontWeight="Bold" Text="{Binding DisplayName}" />
+                    <TextBlock Text="{Binding Id}" Foreground="#bbb" Margin="10 0 0 0" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="10 10 0 0">
+                    <TextBlock Text="No subscriptions" Foreground="#bbb" ></TextBlock>
+                </StackPanel>
+            </StackPanel>
+        </DataTemplate>
+        <localModels:SubscriptionsDataTemplateSelector x:Key="mySubscriptionsDataTemplateSelector" />
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="80" />
@@ -48,15 +80,8 @@
                                     <ItemsControl
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Left"
-                                        ItemsSource="{Binding Tenants}" >
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Margin="10">
-                                                    <TextBlock FontWeight="Bold" Text="{Binding DisplayName}" />
-                                                    <TextBlock Text="{Binding Id}" />
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
+                                        ItemsSource="{Binding Tenants}"
+                                        ItemTemplateSelector="{StaticResource mySubscriptionsDataTemplateSelector}">
                                     </ItemsControl>
                                 </StackPanel>
                             </Border>

@@ -35,12 +35,22 @@ namespace AzureDashboard.Wpf.ViewModels
             Accounts = new ObservableCollection<Account>();
         }
 
+        protected override void OnActivate()
+        {
+            Accounts.Clear();
+            foreach(var acc in azureContextService.GetAccounts())
+            {
+                Accounts.Add(acc);
+            }
+            base.OnActivate();
+        }
+
         public async Task AddAccount()
         {
             AddAccountsIsEnabled.Value = false;
             AddAccountContent.Value = addAccountDisabledContent;
             var added = await azureContextService.AddAccount();
-            var accs = await azureContextService.GetAccounts();
+            var accs = azureContextService.GetAccounts();
             Accounts.Clear();
             foreach(var acc in accs)
             {

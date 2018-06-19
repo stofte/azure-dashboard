@@ -28,14 +28,17 @@ namespace AzureDashboard.Wpf
             var clientId = ConfigurationManager.AppSettings["ClientId"];
             var clientSecret = ConfigurationManager.AppSettings["ClientSecret"];
             var tenantId = ConfigurationManager.AppSettings["TenantId"];
-
-            var httpClient = new HttpClient();
-            var apiClient = new ApiClient(httpClient);
+            
             container.Singleton<IWindowManager, WindowManager>();
             container.Singleton<IEventAggregator, EventAggregator>();
-            container.Instance(new AzureContextService(apiClient));
-            container.Instance(new AccountRepository());
-            container.Instance(new TenantRepository());
+
+            var database = new Database().Initialize();
+            container.Instance(new HttpClient());
+            container.Instance(database);
+            container.Singleton<ApiClient>();
+            container.Singleton<AzureContextService>();
+            container.Singleton<AccountRepository>();
+            
             container.PerRequest<ShellViewModel>();
             container.PerRequest<PageMenuViewModel>();
             container.PerRequest<AccountManagerViewModel>();

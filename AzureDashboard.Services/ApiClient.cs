@@ -73,8 +73,22 @@ namespace AzureDashboard.Services
             return tenants.Single(t => t.Id == token.TenantId);
         }
 
-        
-        
+        public async Task<IEnumerable<Subscription>> Subscriptions(AzureAccessToken token)
+        {
+            var msg = new HttpRequestMessage()
+                .Get($"{ArmBaseUrl}/subscriptions?api-version=2016-06-01")
+                .WithHeader("Authorization", $"Bearer {token.Value}");
+            var response = await client.SendAsync(msg).ConfigureAwait(false);
+            var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var marker = "\"value\":";
+            var json = body.Substring(body.IndexOf(marker) + marker.Length);
+            json = json.Substring(0, json.Length - 1);
+            var subs = JsonConvert.DeserializeObject<IEnumerable<Subscription>>(json);
+            return subs;
+        }
+
+
+
         public async Task<bool> Initialize()
         {
             // todo re-add service principal path
