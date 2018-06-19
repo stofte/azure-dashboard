@@ -5,13 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AzureDashboard.Core.Models
+namespace AzureDashboard.Core.AzureRM.Models
 {
     public class Tenant
     {
         public string Id { get; set; }
         public string DisplayName { get; set; }
-        public string DefaultVerifiedDomain { get; set; }
-        public IEnumerable<Subscription> Subscriptions { get; set; }
+        public IEnumerable<VerifiedDomain> VerifiedDomains { get; set; }
     }
 }

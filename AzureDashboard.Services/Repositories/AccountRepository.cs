@@ -1,5 +1,4 @@
-﻿using AzureDashboard.Core.AzureRM.Models;
-using AzureDashboard.Core.Models;
+﻿using AzureDashboard.Core.Models;
 using AzureDashboard.Services.Helpers;
 using Dapper;
 using System;
@@ -43,9 +42,11 @@ namespace AzureDashboard.Services.Repositories
             var allCreated = account.Tenants.Select(tenant =>
             {
                 var tenantCmd = database.Connection.CreateCommand();
-                tenantCmd.CommandText = "insert into Tenant(Id, DisplayName) values(@id, @displayName)";
+                tenantCmd.CommandText = "insert into Tenant(Id, DisplayName, DefaultVerifiedDomain)" +
+                    "values(@id, @displayName, @defaultVerifiedDomain)";
                 tenantCmd.Parameters.AddWithValue("@id", tenant.Id);
                 tenantCmd.Parameters.AddWithValue("@displayName", tenant.DisplayName);
+                tenantCmd.Parameters.AddWithValue("@defaultVerifiedDomain", tenant.DefaultVerifiedDomain);
                 return tenantCmd.ExecuteNonQuery() == 1;
             }).All(x => x);
 
@@ -93,7 +94,7 @@ namespace AzureDashboard.Services.Repositories
             foreach(var tenant in tenants)
             {
                 var tenantSubs = subs.Where(x => x.Tenant == tenant.Id);
-                tenant.Subscriptions = tenantSubs.Select(x => new Subscription
+                tenant.Subscriptions = tenantSubs.Select(x => new Core.AzureRM.Models.Subscription
                 {
                     SubscriptionId = x.SubscriptionId,
                     DisplayName = x.DisplayName

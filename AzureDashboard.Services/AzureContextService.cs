@@ -1,6 +1,5 @@
 ﻿using AzureDashboard.Services.Helpers;
 using AzureDashboard.Core.Models;
-using AzureDashboard.Core.AzureRM.Models;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using System;
 using System.Collections.Generic;
@@ -52,7 +51,7 @@ namespace AzureDashboard.Services
         {
             ConfigureConnection();
             fileCache = new FileCache();
-            await LoadContexts().ConfigureAwait(false);
+            await LoadCachedContexts().ConfigureAwait(false);
         }
 
         public async Task<AzureAccessToken> Context(Tenant tenant)
@@ -129,6 +128,10 @@ namespace AzureDashboard.Services
             }
             catch (AdalServiceException) // assume user cancelled login
             {
+                //        when (exn.Message.Contains("AADSTS70002") || // Error validating credentials.
+                //              exn.Message.Contains("AADSTS50012") || // Invalid client secret is provided.
+                //              exn.Message.Contains("User canceled authentication")) // cancelled
+                //    {
                 return false;
             }
         }
@@ -149,7 +152,7 @@ namespace AzureDashboard.Services
             return ctx;
         }
 
-        async Task LoadContexts()
+        async Task LoadCachedContexts()
         {
             var accts = accountRepository.All();
             var fileCached = fileCache.ReadItems();
@@ -179,25 +182,26 @@ namespace AzureDashboard.Services
             var tokenUrl = useGraphAuth ? graphBaseUrl : armBaseUrl;
 
             AuthenticationResult result = null;
-            if (!string.IsNullOrWhiteSpace(userUniqueId))
+            try
             {
-                result = await ac.AcquireTokenAsync(tokenUrl, 
-                    powershellAppId, powershellReturnUrl, 
-                    new PlatformParameters(promptBehavior),
-                    new UserIdentifier(userUniqueId, UserIdentifierType.UniqueId)).ConfigureAwait(false);
+                if (!string.IsNullOrWhiteSpace(userUniqueId))
+                {
+                    result = await ac.AcquireTokenAsync(tokenUrl, 
+                        powershellAppId, powershellReturnUrl, 
+                        new PlatformParameters(promptBehavior),
+                        new UserIdentifier(userUniqueId, UserIdentifierType.UniqueId)).ConfigureAwait(false);
+                }
+                else
+                {
+                    result = await ac.AcquireTokenAsync(tokenUrl, powershellAppId, 
+                        powershellReturnUrl, new PlatformParameters(promptBehavior)).ConfigureAwait(false);
+                }
             }
-            else
+            catch (HttpRequestException exn)
             {
-                result = await ac.AcquireTokenAsync(tokenUrl, powershellAppId, 
-                    powershellReturnUrl, new PlatformParameters(promptBehavior)).ConfigureAwait(false);
             }
 
             return result;
-        }
-        
-        void QueryUserTenant()
-        {
-
         }
         
         void ConfigureConnection()

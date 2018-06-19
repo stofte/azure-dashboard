@@ -24,7 +24,8 @@ namespace AzureDashboard.Services.Repositories
         string tenantsSql = @"
 CREATE TABLE Tenant(
     Id nvarchar(50) PRIMARY KEY NOT NULL,
-    DisplayName nvarchar(200) NOT NULL
+    DisplayName nvarchar(200) NOT NULL,
+    DefaultVerifiedDomain nvarchar(200) NOT NULL
 )";
         string subscriptionsSql = @"
 CREATE TABLE Subscription(

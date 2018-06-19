@@ -21,5 +21,17 @@ namespace AzureDashboard.Services.Helpers
             message.Headers.Add(name, value);
             return message;
         }
+
+        public static async Task<HttpResponseMessage> SendRequest(this HttpClient httpClient, HttpRequestMessage message)
+        {
+            try
+            {
+                return await httpClient.SendAsync(message).ConfigureAwait(false);
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

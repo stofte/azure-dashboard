@@ -44,7 +44,7 @@ namespace AzureDashboard.Services
             var msg = new HttpRequestMessage()
                 .Get($"{ArmBaseUrl}/tenants?api-version=2016-06-01")
                 .WithHeader("Authorization", $"Bearer {token.Value}");
-            var response = await client.SendAsync(msg).ConfigureAwait(false);
+            var response = await client.SendRequest(msg).ConfigureAwait(false);
             var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var json = body.Substring(9);
             json = json.Substring(0, json.Length - 1);
@@ -52,12 +52,12 @@ namespace AzureDashboard.Services
             return data;
         }
 
-        public async Task<Tenant> Tenant(AzureAccessToken token)
+        public async Task<Core.Models.Tenant> Tenant(AzureAccessToken token)
         {
             var msg = new HttpRequestMessage()
                 .Get($"https://graph.microsoft.com/v1.0/{token.TenantId}/organization/")
                 .WithHeader("Authorization", $"Bearer {token.Value}");
-            var response = await client.SendAsync(msg).ConfigureAwait(false);
+            var response = await client.SendRequest(msg).ConfigureAwait(false);
             // https://stackoverflow.com/questions/43301218/authenticating-with-azure-active-directory-on-powershell
             // also seems to indicate no subscription (aka useless)
             if (!response.IsSuccessStatusCode)
@@ -69,8 +69,14 @@ namespace AzureDashboard.Services
             var marker = "\"value\":";
             var json = body.Substring(body.IndexOf(marker) + marker.Length);
             json = json.Substring(0, json.Length - 1);
-            var tenants = JsonConvert.DeserializeObject<IEnumerable<Tenant>>(json);
-            return tenants.Single(t => t.Id == token.TenantId);
+            var tenants = JsonConvert.DeserializeObject<IEnumerable<Core.AzureRM.Models.Tenant>>(json);
+            var arm = tenants.Single(t => t.Id == token.TenantId);
+            return new Core.Models.Tenant
+            {
+                DefaultVerifiedDomain = arm.VerifiedDomains.Single(x => x.IsDefault).Name,
+                DisplayName = arm.DisplayName,
+                Id = arm.Id
+            };
         }
 
         public async Task<IEnumerable<Subscription>> Subscriptions(AzureAccessToken token)
@@ -78,7 +84,7 @@ namespace AzureDashboard.Services
             var msg = new HttpRequestMessage()
                 .Get($"{ArmBaseUrl}/subscriptions?api-version=2016-06-01")
                 .WithHeader("Authorization", $"Bearer {token.Value}");
-            var response = await client.SendAsync(msg).ConfigureAwait(false);
+            var response = await client.SendRequest(msg).ConfigureAwait(false);
             var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var marker = "\"value\":";
             var json = body.Substring(body.IndexOf(marker) + marker.Length);
@@ -86,81 +92,7 @@ namespace AzureDashboard.Services
             var subs = JsonConvert.DeserializeObject<IEnumerable<Subscription>>(json);
             return subs;
         }
-
-
-
-        public async Task<bool> Initialize()
-        {
-            // todo re-add service principal path
-            var authString = "https://login.microsoftonline.com/" + _tenantId;
-            //var authenticationContext = new AuthenticationContext(authString, false);
-            //var clientCred = new ClientCredential(_clientId);
-            
-            bool success = false;
-            try
-            {
-                var cache = new FileCache();
-                var cached = cache.ReadItems().ToList();
-                if (cached.Count() > 0)
-                {
-                    foreach(var c in cached)
-                    {
-                        var ac = new AuthenticationContext("https://login.microsoftonline.com/" + c.TenantId, cache);
-                        var ar = await ac.AcquireTokenAsync(_armBaseUrl, _powershellApplicationId, _powershellReturnUrl, new PlatformParameters(PromptBehavior.Auto));
-                    }
-                }
-                //var authenticationResult = await authenticationContext.AcquireTokenAsync(_armBaseUrl, clientCred).ConfigureAwait(false);
-                client = new HttpClient
-                {
-                    BaseAddress = new Uri(_armBaseUrl)
-                };
-                
-                {
-                    
-                    // https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-devhowto-multi-tenant-overview
-                    // https://dev.office.com/blogs/microsoft-graph-or-azure-ad-graph
-
-                    var commonCtx = new AuthenticationContext("https://login.microsoftonline.com/common", cache);
-                    
-                    var commonAuth = await commonCtx.AcquireTokenAsync(_armBaseUrl, _powershellApplicationId, _powershellReturnUrl, new PlatformParameters(PromptBehavior.Auto));
-                    var ui = commonAuth.UserInfo;
-
-                    commonCtx = new AuthenticationContext(commonAuth.Authority, cache);
-                    
-                    var x = await commonCtx.AcquireTokenAsync(_armBaseUrl, _powershellApplicationId, _powershellReturnUrl, new PlatformParameters(PromptBehavior.Never));
-
-                    client.DefaultRequestHeaders.Clear();
-                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {x.AccessToken}");
-
-                    var response = await client.GetAsync("/tenants?api-version=2016-06-01").ConfigureAwait(false);
-                    var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    var json = body.Substring(9);
-                    json = json.Substring(0, json.Length - 1);
-                    var data = JsonConvert.DeserializeObject<IEnumerable<TenantIdentifier>>(json);
-                    foreach(var d in data)
-                    {
-                        var orgQuery = $"https://graph.microsoft.com/v1.0/{d.TenantId}/organization/";
-                        var ac = new AuthenticationContext($"https://login.microsoftonline.com/{d.TenantId}", cache);
-                        var ar = await ac.AcquireTokenAsync("https://graph.microsoft.com", _powershellApplicationId, _powershellReturnUrl, new PlatformParameters(PromptBehavior.Never));
-                        var oclient = new HttpClient();
-                        oclient.DefaultRequestHeaders.Clear();
-                        oclient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ar.AccessToken}");
-                        var oresponse = await oclient.GetAsync(orgQuery).ConfigureAwait(false);
-                        var obody = await oresponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    }
-
-                    success = true;
-                }
-            }
-            catch (AdalServiceException exn) 
-                when (exn.Message.Contains("AADSTS70002") || // Error validating credentials.
-                      exn.Message.Contains("AADSTS50012") || // Invalid client secret is provided.
-                      exn.Message.Contains("User canceled authentication")) // cancelled
-            { }
-            
-            return success;
-        }
-
+        
         public void SetSubscription(Subscription subscription)
         {
             _selectedSubscription = subscription;

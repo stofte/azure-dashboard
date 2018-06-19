@@ -66,8 +66,10 @@
     <Compile Include="AzureRM.Models\Resource.cs" />
     <Compile Include="AzureRM.Models\ResourceType.cs" />
     <Compile Include="AzureRM.Models\Subscription.cs" />
+    <Compile Include="AzureRM.Models\Tenant.cs" />
     <Compile Include="AzureRM.Models\TenantIdentifier.cs" />
     <Compile Include="AzureRM.Models\UserInfo.cs" />
+    <Compile Include="AzureRM.Models\VerifiedDomain.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\AzureAccessToken.cs" />
     <Compile Include="Models\Tenant.cs" />
