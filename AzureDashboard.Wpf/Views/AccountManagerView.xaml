@@ -97,7 +97,11 @@
             VerticalAlignment="Bottom"
             HorizontalAlignment="Right"
             md:ShadowAssist.ShadowDepth="Depth1"
+            IsEnabled="{Binding Path=AddAccountsIsEnabled.Value}"
             Style="{StaticResource MaterialDesignFloatingActionButton}"
+            md:ButtonProgressAssist.IsIndicatorVisible="{Binding Path=AddAccountsSpinnerIsEnabled.Value}"
+            md:ButtonProgressAssist.Value="-1"
+            md:ButtonProgressAssist.IsIndeterminate="True"
             ToolTip="Add an Azure account">
             <md:PackIcon Kind="Plus" Height="24" Width="24" />
         </Button>

@@ -18,6 +18,7 @@ namespace AzureDashboard.Wpf.ViewModels
         AzureContextService azureContextService;
         public Prop<bool> Visible { get; set; }
         public Prop<bool> AddAccountsIsEnabled { get; set; }
+        public Prop<bool> AddAccountsSpinnerIsEnabled { get; set; }
         public Prop<string> AddAccountContent { get; set; }
 
 
@@ -31,6 +32,7 @@ namespace AzureDashboard.Wpf.ViewModels
             this.azureContextService = azureContextService;
             Visible = new Prop<bool>();
             AddAccountsIsEnabled = new Prop<bool>(true);
+            AddAccountsSpinnerIsEnabled = new Prop<bool>(false);
             AddAccountContent = new Prop<string>(addAccountEnabledContent);
             Accounts = new ObservableCollection<Account>();
         }
@@ -48,6 +50,7 @@ namespace AzureDashboard.Wpf.ViewModels
         public async Task AddAccount()
         {
             AddAccountsIsEnabled.Value = false;
+            AddAccountsSpinnerIsEnabled.Value = true;
             AddAccountContent.Value = addAccountDisabledContent;
             var added = await azureContextService.AddAccount();
             var accs = azureContextService.GetAccounts();
@@ -57,6 +60,7 @@ namespace AzureDashboard.Wpf.ViewModels
                 Accounts.Add(acc);
             }
             AddAccountsIsEnabled.Value = true;
+            AddAccountsSpinnerIsEnabled.Value = false;
             AddAccountContent.Value = addAccountEnabledContent;
         }
     }
