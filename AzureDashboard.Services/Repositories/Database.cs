@@ -53,6 +53,20 @@ CREATE TABLE TenantAccountLink(
     FOREIGN KEY(Account) REFERENCES Account(UniqueId)
 )";
 
+        string timegrainSql = @"
+CREATE TABLE MetricDefinition(
+    public string SubscriptionId { get; set; }
+    public string ResourceID { get; set; }
+    
+)";
+
+        string metricDefinitionSql = @"
+CREATE TABLE MetricDefinition(
+    public string SubscriptionId { get; set; }
+    public string ResourceID { get; set; }
+    
+)";
+
         SQLiteConnection connection;
 
         public SQLiteConnection Connection { get { return connection; } }
