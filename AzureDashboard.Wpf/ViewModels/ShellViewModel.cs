@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace AzureDashboard.Wpf.ViewModels
 {
@@ -19,12 +21,17 @@ namespace AzureDashboard.Wpf.ViewModels
 
         public Prop<PageMenuViewModel> PageMenuView { get; set; }
 
+        public Prop<ImageSource> WindowIcon { get; set; }
+
         public ShellViewModel(AzureContextService azureContextService)
         {
             this.azureContextService = azureContextService;
             AccountManagerView = new Prop<AccountManagerViewModel>();
             DashboardView = new Prop<DashboardViewModel>();
             PageMenuView = new Prop<PageMenuViewModel>();
+            //var img = new BitmapImage(new Uri("pack://application:,,,/AzureDashboard.Wpf;Resources/MainWindowIcon.ico"));
+            ////img.Freeze();
+            //WindowIcon = new Prop<ImageSource>(img);
         }
 
 
