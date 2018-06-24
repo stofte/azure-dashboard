@@ -9,6 +9,7 @@ namespace AzureDashboard.Core.Models
 {
     public class Account
     {
+        public int RowId { get; set; }
         public UserInfo Info { get; set; }
         public string TenantId { get; set; }
         public IEnumerable<Tenant> Tenants { get; set; }

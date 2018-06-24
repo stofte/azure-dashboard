@@ -20,6 +20,6 @@ namespace AzureDashboard.Services.Repositories
         
         public abstract IEnumerable<T> All();
         public abstract bool Add(T instance);
-        public abstract T Remove();
+        public abstract void Remove(T instance);
     }
 }

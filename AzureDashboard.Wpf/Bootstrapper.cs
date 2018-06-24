@@ -38,7 +38,8 @@ namespace AzureDashboard.Wpf
             container.Singleton<ApiClient>();
             container.Singleton<AzureContextService>();
             container.Singleton<AccountRepository>();
-            
+
+            container.PerRequest<GraphViewModel>();
             container.PerRequest<ShellViewModel>();
             container.PerRequest<PageMenuViewModel>();
             container.PerRequest<AccountManagerViewModel>();

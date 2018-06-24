@@ -44,7 +44,7 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="80" />
+            <RowDefinition Height="30" />
             <RowDefinition Height="*" />
             <RowDefinition Height="100"  />
         </Grid.RowDefinitions>
@@ -57,7 +57,7 @@
         <TextBlock
             Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
             FontSize="20"
-            Margin="20 20 20 0">
+            Margin="20 0 20 0">
             Accounts
         </TextBlock>
 
@@ -75,10 +75,15 @@
                                 BorderBrush="{StaticResource MaterialDesignDivider}">
                                 <StackPanel
                                     Margin="0 0 0 20">
-                                    <TextBlock 
-                                        Text="{Binding Path=Info.DisplayableId}"
-                                        FontSize="20">
-                                    </TextBlock>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock 
+                                            Text="{Binding Path=Info.DisplayableId}"
+                                            FontSize="20">
+                                        </TextBlock>
+                                        <Button Margin="20 0 0 0" FontSize="10">
+                                            Remove
+                                        </Button>
+                                    </StackPanel>
                                     <ItemsControl
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Left"
@@ -105,7 +110,7 @@
             md:ButtonProgressAssist.Value="-1"
             md:ButtonProgressAssist.IsIndeterminate="True"
             ToolTip="Add an Azure account">
-            <md:PackIcon Kind="Plus" Height="24" Width="24" />
+            <md:PackIcon Kind="AccountPlus" Height="24" Width="24" />
         </Button>
 
     </Grid>

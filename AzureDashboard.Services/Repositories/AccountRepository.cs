@@ -15,6 +15,7 @@ namespace AzureDashboard.Services.Repositories
     {
         class AccountSerialized
         {
+            public int RowId { get; set; }
             public string UniqueId { get; set; }
             public string DisplayableId { get; set; }
             public string GivenName { get; set; }
@@ -109,6 +110,7 @@ namespace AzureDashboard.Services.Repositories
                     // assumed that the if the user isn't a live account, one of the accessible tenants is the home tenant
                     return new Account
                     {
+                        RowId =  x.RowId,
                         Info = new Core.AzureRM.Models.UserInfo
                         {
                             UniqueId = x.UniqueId,
@@ -123,9 +125,9 @@ namespace AzureDashboard.Services.Repositories
             return accounts;
         }
         
-        public override Account Remove()
+        public override void Remove(Account account)
         {
-            throw new NotImplementedException();
+            var acc = All().Single(x => x.RowId == account.RowId);
         }
     }
 }
